@@ -1,3 +1,5 @@
 Flask
-Flask-JSON
+# Flask-JSON
 Flask-SQLAlchemy
+Flask-Cors
+connexion

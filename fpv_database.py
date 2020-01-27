@@ -4,24 +4,38 @@
 # https://pythonhosted.org/Flask-JSON/
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/#a-minimal-application
 # https://dev.to/hackersandslackers/manage-database-models-with-flask-sqlalchemy-22n8
+# https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs/
+# https://github.com/zalando/connexion
 
-from flask import Flask, request
-from flask_json import FlaskJSON, JsonError, json_response, as_json
+# from flask import Flask, request
+# from flask_json import FlaskJSON, JsonError, json_response, as_json
+from flask_cors import CORS
+import connexion
+
 
 from models import db, User, Shop, ShopInventory, Club, YTChannel
 
-import datetime
+import time
 
-app = Flask(__name__)
+
+app = connexion.App(__name__, specification_dir='swagger/', resolver=RestyResolver('api'))
+app.add_api('fpv_db_api.yaml')
+
+# config
 app.config["DEBUG"] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-FlaskJSON(app)
+
+# enable connexion
+
+# enable FlaskJson
+# FlaskJSON(app)
+# enable CORS
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
-@app.route('/get_time')
+@app.route('/')
 def get_time():
-    now = datetime.utcnow()
-    return json_response(time=now)
+    return json_response(time=time.time())
 
 
 @app.route('/increment_value', methods=['POST'])
